@@ -10,9 +10,6 @@ const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
-const seeding = ref(false)
-const seedResult = ref('')
-
 async function handleLogin() {
   error.value = ''
   loading.value = true
@@ -25,19 +22,6 @@ async function handleLogin() {
   }
 }
 
-async function handleSeed() {
-  seedResult.value = ''
-  seeding.value = true
-  const res = await auth.seedDemoData()
-  seeding.value = false
-  const parts = []
-  if (res.users.length) parts.push(`${res.users.length} user (${res.users.filter(u => u.status === 'created').length} baru)`)
-  if (res.categories) parts.push(`${res.categories} kategori`)
-  if (res.suppliers) parts.push(`${res.suppliers} supplier`)
-  if (res.products) parts.push(`${res.products} produk`)
-  if (parts.length) seedResult.value = '✅ ' + parts.join(', ') + ' berhasil'
-  if (res.errors.length) seedResult.value += ' ⚠️ ' + res.errors.join('; ')
-}
 </script>
 
 <template>
@@ -85,18 +69,7 @@ async function handleSeed() {
         <p class="font-medium mb-1">Akun Demo:</p>
         <p>Owner: owner@smartpos.com / owner123</p>
         <p>Kasir: kasir@smartpos.com / kasir123</p>
-        <p class="mt-2">
-          <button
-            @click="handleSeed"
-            :disabled="seeding"
-            class="text-primary hover:underline font-medium disabled:opacity-50"
-          >
-            {{ seeding ? 'Menambahkan...' : 'Buat Akun + Data Demo' }}
-          </button>
-        </p>
-        <p v-if="seedResult" class="mt-1" :class="seedResult.includes('⚠️') ? 'text-amber-600' : 'text-emerald-600'">
-          {{ seedResult }}
-        </p>
+        <p>Gudang: gudang@smartpos.com / gudang123</p>
       </div>
     </div>
   </div>
