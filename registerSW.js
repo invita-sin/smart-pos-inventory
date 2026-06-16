@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/smart-pos-inventory/sw.js', { scope: '/smart-pos-inventory/' })})}
