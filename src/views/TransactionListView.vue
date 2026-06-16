@@ -11,7 +11,10 @@ const filter = ref('all')
 const selectedTransaction = ref(null)
 const showDetail = ref(false)
 
-onMounted(() => transactionStore.fetchAll())
+onMounted(async () => {
+  await transactionStore.fetchAll()
+  applyFilter()
+})
 
 const filteredTransactions = ref([])
 

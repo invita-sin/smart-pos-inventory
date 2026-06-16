@@ -6,9 +6,13 @@ import { useToastStore } from './toastStore'
 export const useStockStore = defineStore('stock', () => {
   const stockIns = ref([])
   const stockOuts = ref([])
+  const loadingIns = ref(false)
+  const loadingOuts = ref(false)
+
   const loading = ref(false)
 
   async function fetchStockIns() {
+    loadingIns.value = true
     loading.value = true
     try {
       const { data } = await supabase
@@ -17,11 +21,13 @@ export const useStockStore = defineStore('stock', () => {
         .order('date', { ascending: false })
       if (data) stockIns.value = data
     } finally {
-      loading.value = false
+      loadingIns.value = false
+      loading.value = loadingOuts.value
     }
   }
 
   async function fetchStockOuts() {
+    loadingOuts.value = true
     loading.value = true
     try {
       const { data } = await supabase
@@ -30,7 +36,8 @@ export const useStockStore = defineStore('stock', () => {
         .order('date', { ascending: false })
       if (data) stockOuts.value = data
     } finally {
-      loading.value = false
+      loadingOuts.value = false
+      loading.value = loadingIns.value
     }
   }
 
@@ -59,5 +66,5 @@ export const useStockStore = defineStore('stock', () => {
     return data
   }
 
-  return { stockIns, stockOuts, loading, fetchStockIns, fetchStockOuts, stockIn, stockOut }
+  return { stockIns, stockOuts, loading, loadingIns, loadingOuts, fetchStockIns, fetchStockOuts, stockIn, stockOut }
 })

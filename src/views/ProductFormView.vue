@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useProductStore } from '../stores/productStore'
 import { useCategoryStore } from '../stores/categoryStore'
 import { useSupplierStore } from '../stores/supplierStore'
+import SkeletonLoader from '../components/SkeletonLoader.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,7 +15,6 @@ const supplierStore = useSupplierStore()
 const isEdit = !!route.params.id
 const loading = ref(false)
 const saving = ref(false)
-const error = ref('')
 
 const form = ref({
   name: '',
@@ -57,7 +57,6 @@ onMounted(async () => {
 
 async function save() {
   saving.value = true
-  error.value = ''
   try {
     if (isEdit) {
       await productStore.update(route.params.id, form.value)
@@ -65,8 +64,7 @@ async function save() {
       await productStore.create(form.value)
     }
     router.push('/products')
-  } catch (e) {
-    error.value = e.message
+  } catch {
   } finally {
     saving.value = false
   }
@@ -79,7 +77,7 @@ async function save() {
       {{ isEdit ? 'Edit Produk' : 'Tambah Produk' }}
     </h1>
 
-    <div v-if="loading" class="text-center py-12 text-gray-400">Memuat...</div>
+    <SkeletonLoader v-if="loading" variant="form" />
 
     <form v-else @submit.prevent="save" class="glass rounded-xl p-6 space-y-5">
       <div class="grid grid-cols-2 gap-4">
@@ -133,8 +131,6 @@ async function save() {
           </select>
         </div>
       </div>
-
-      <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
 
       <div class="flex gap-3 pt-2">
         <button type="button" @click="router.back()" class="px-6 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Batal</button>
